@@ -1,8 +1,3 @@
-Berikut adalah contoh **`README.md`** untuk GitHub repository kamu.  
-Ini akan menjelaskan struktur proyek, fitur yang tersedia, dan cara menjalankan aplikasi.
-
----
-
 # 📚 LIBRAIN - Aplikasi Manajemen Perpustakaan
 
 > Sistem manajemen perpustakaan sederhana dengan Laravel 10 + Tailwind CSS
