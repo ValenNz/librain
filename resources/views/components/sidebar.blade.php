@@ -9,7 +9,7 @@
                 </a>
             </li>
             <li class="mb-2">
-                <a href="{{ route('user.management') }}" class="flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-lg">
+                <a href="{{ route('anggota.index') }}" class="flex items-center text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-lg">
                     <i class="bi bi-person mr-3"></i> User Management
                 </a>
             </li>
