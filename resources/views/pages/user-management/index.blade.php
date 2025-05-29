@@ -7,7 +7,7 @@
 <div class="mb-6 flex justify-end">
     <a href="{{ route('anggota.create') }}"
        class="bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-600 transition duration-200 whitespace-nowrap text-center">
-        Add Anggota
+        Tambah Anggota
     </a>
 </div>
 

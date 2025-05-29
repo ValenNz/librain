@@ -11,7 +11,7 @@
 <h1 class="text-3xl font-bold mb-6">Daftar Denda</h1>
 
 {{-- <a href="{{ route('denda.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-6 inline-block">
-    Add Denda
+    Tambah Denda
 </a> --}}
 
 <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">

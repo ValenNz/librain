@@ -7,7 +7,7 @@
 <div class="mb-6 flex justify-between">
     <input type="text" placeholder="Search" class="px-4 py-2 border rounded w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500">
     <a href="{{ route('peminjaman.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-4">
-        Add Peminjaman
+        Tambah Peminjaman
     </a>
 </div>
 

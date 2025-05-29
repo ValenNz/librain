@@ -11,7 +11,7 @@
 <h1 class="text-3xl font-bold mb-6">Pengembalian Buku</h1>
 
 <a href="{{ route('pengembalian.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-6 inline-block">
-    Add Pengembalian
+    Tambah Pengembalian
 </a>
 
 <div class="bg-white p-6 rounded shadow overflow-x-auto">
