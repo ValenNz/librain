@@ -26,8 +26,8 @@ class AnggotaController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:anggota,email',
-            'telepon' => 'nullable|string|max:20',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'telepon' => ['nullable', 'string', 'regex:/^[0-9+\-\s]+$/', 'min:10', 'max:15'],
+            'foto' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -35,7 +35,7 @@ class AnggotaController extends Controller
 
         if ($request->hasFile('foto')) {
             $imageName = time().'.'.$request->foto->extension();
-            $request->foto->move(public_path('storage'), $imageName);
+            $request->foto->move(public_path('storage/anggota'), $imageName);
             $data['foto'] = $imageName;
         }
 
@@ -52,7 +52,6 @@ class AnggotaController extends Controller
 
     public function update(Request $request, Anggota $anggota)
 {
-    // Validasi input dinamis
     $rules = [
         'nama' => 'sometimes|required|string|max:255',
         'telepon' => 'sometimes|required|string|max:20',
@@ -60,19 +59,17 @@ class AnggotaController extends Controller
         'status' => 'sometimes|required|in:active,inactive',
     ];
 
-    // Validasi email + ignore current user's email
     if ($request->filled('email')) {
-        $rules['email'] = [
-            'required',
-            'email',
-            Rule::unique('anggota', 'email')->ignore($anggota->id),
-        ];
-    }
+            $rules['email'] = [
+                'required',
+                'email',
+                Rule::unique('anggota', 'email')->ignore($anggota->id),
+            ];
+        }
 
-    // Jalankan validasi
+
     $validated = Validator::make($request->all(), $rules)->validate();
 
-    // Filter field yang benar-benar berubah
     $data = [];
 
     if ($request->filled('nama')) {
@@ -91,20 +88,17 @@ class AnggotaController extends Controller
         $data['status'] = $request->input('status');
     }
 
-    // Upload foto jika ada
     if ($request->hasFile('foto')) {
-        // Hapus foto lama jika tersedia
         if ($anggota->foto && file_exists(public_path('storage/'.$anggota->foto))) {
-            unlink(public_path('storage/'.$anggota->foto));
+            unlink(public_path('storage/anggota'.$anggota->foto));
         }
 
         $file = $request->file('foto');
         $imageName = time().'.'.$file->getClientOriginalExtension();
-        $file->move(public_path('storage'), $imageName);
+        $file->move(public_path('storage/anggota'), $imageName);
         $data['foto'] = $imageName;
     }
 
-    // Update data
     $anggota->update($data);
 
     return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui.');

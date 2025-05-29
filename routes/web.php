@@ -8,25 +8,28 @@ use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\DendaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::get('/', function () {
     return view('auth.login');
-});
+})->middleware('guest');
 
-Route::middleware(['guest'])->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::middleware(['web'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::get('/user/management', function () {
-        return view('pages.user-management');
-    })->name('anggota.index')->middleware('auth');
-
     Route::get('/user/management', [AnggotaController::class, 'index'])->name('anggota.index');
+    Route::get('/anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
     Route::get('/anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
     Route::post('/anggota', [AnggotaController::class, 'store'])->name('anggota.store');
     Route::get('/anggota/{anggota}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
