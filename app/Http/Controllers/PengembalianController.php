@@ -25,38 +25,45 @@ class PengembalianController extends Controller
 
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'peminjaman_id' => 'required|exists:peminjaman,id',
-        'tanggal_kembali' => 'required|date',
-        'catatan_kondisi' => 'nullable|string|max:255'
-    ]);
-
-    $peminjaman = Peminjaman::find($validated['peminjaman_id']);
-
-    if (!$peminjaman) {
-        return back()->withErrors(['peminjaman_id' => 'Data peminjaman tidak ditemukan']);
-    }
-
-    $telat = Carbon::parse($validated['tanggal_kembali'])->diffInDays(Carbon::parse($peminjaman->tanggal_tempo));
-
-    $pengembalian = Pengembalian::create([
-        'peminjaman_id' => $validated['peminjaman_id'],
-        'tanggal_kembali' => $validated['tanggal_kembali'],
-        'catatan_kondisi' => $validated['catatan_kondisi'] ?? null,
-    ]);
-
-    if ($telat > 0) {
-        Denda::create([
-            'pengembalian_id' => $pengembalian->id,
-            'jumlah' => $telat * 2000,
-            'alasan' => "Terlambat $telat hari",
-            'status' => 'Non Paid'
+    {
+        $validated = $request->validate([
+            'peminjaman_id' => 'required|exists:peminjaman,id',
+            'tanggal_kembali' => 'required|date',
+            'catatan_kondisi' => 'nullable|string|max:255'
         ]);
+
+        $peminjaman = Peminjaman::find($validated['peminjaman_id']);
+
+        if (!$peminjaman) {
+            return back()->withErrors(['peminjaman_id' => 'Data peminjaman tidak ditemukan']);
+        }
+
+        $tanggal_kembali = Carbon::parse($validated['tanggal_kembali']);
+        $tanggal_tempo = Carbon::parse($peminjaman->tanggal_tempo);
+
+        $telat = 0;
+        if ($tanggal_kembali->gt($tanggal_tempo)) {
+            $telat = $tanggal_kembali->diffInDays($tanggal_tempo);
+        }
+
+        $pengembalian = Pengembalian::create([
+            'peminjaman_id' => $validated['peminjaman_id'],
+            'tanggal_kembali' => $validated['tanggal_kembali'],
+            'catatan_kondisi' => $validated['catatan_kondisi'] ?? null,
+        ]);
+
+        if ($telat > 0) {
+            Denda::create([
+                'pengembalian_id' => $pengembalian->id,
+                'jumlah' => $telat * 2000,
+                'alasan' => "Terlambat $telat hari",
+                'status' => 'Non Paid'
+            ]);
+        }
+
+        return redirect()->route('pengembalian.index')->with('success', 'Buku berhasil dikembalikan.');
     }
 
-    return redirect()->route('pengembalian.index')->with('success', 'Buku berhasil dikembalikan.');
-}
 
     public function show(Pengembalian $pengembalian): View
     {
@@ -88,5 +95,30 @@ class PengembalianController extends Controller
         return redirect()->route('pengembalian.index')->with('success', 'Data pengembalian berhasil dihapus.');
     }
 
+
+    public function ajaxPeminjamans(Request $request)
+{
+    $term = $request->get('term', '');
+
+    $peminjamans = Peminjaman::with(['buku', 'anggota'])
+        ->whereHas('buku', function($q) use ($term) {
+            $q->where('judul', 'like', "%{$term}%");
+        })
+        ->orWhereHas('anggota', function($q) use ($term) {
+            $q->where('nama', 'like', "%{$term}%");
+        })
+        ->limit(20)
+        ->get();
+
+    $result = $peminjamans->map(function($p) {
+        return [
+            'id' => $p->id,
+            'buku' => $p->buku->judul ?? '-',
+            'anggota' => $p->anggota->nama ?? '-',
+        ];
+    });
+
+    return response()->json($result);
+}
 
 }

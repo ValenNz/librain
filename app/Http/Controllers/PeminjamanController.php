@@ -32,10 +32,32 @@ class PeminjamanController extends Controller
             'tanggal_tempo' => 'required|date|after_or_equal:tanggal_pinjam'
         ]);
 
+        // Ambil tanggal pinjam dan tanggal tempo dari input
+        $startNew = $validated['tanggal_pinjam'];
+        $endNew = $validated['tanggal_tempo'];
+        $bukuId = $validated['buku_id'];
+
+        // Cek apakah buku sudah dipinjam dengan rentang tanggal yang overlap
+        $overlap = Peminjaman::where('buku_id', $bukuId)
+            ->where(function($query) use ($startNew, $endNew) {
+                $query->whereBetween('tanggal_pinjam', [$startNew, $endNew])
+                    ->orWhereBetween('tanggal_tempo', [$startNew, $endNew])
+                    ->orWhere(function($q) use ($startNew, $endNew) {
+                        $q->where('tanggal_pinjam', '<=', $startNew)
+                            ->where('tanggal_tempo', '>=', $endNew);
+                    });
+            })
+            ->exists();
+
+        if ($overlap) {
+            return back()->withErrors(['buku_id' => 'Buku sudah dipinjam dalam rentang tanggal yang dipilih.'])->withInput();
+        }
+
         Peminjaman::create($validated);
 
         return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil ditambahkan.');
     }
+
 
     public function edit(Peminjaman $peminjaman): View
     {
@@ -64,4 +86,6 @@ class PeminjamanController extends Controller
 
         return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil dihapus.');
     }
+
+    
 }

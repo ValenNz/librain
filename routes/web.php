@@ -72,5 +72,4 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
 
 
-
 });
