@@ -90,4 +90,18 @@ class BukuController extends Controller
 
         return redirect()->route('buku.index')->with('success', 'Buku berhasil dihapus.');
     }
+
+
+    public function search(Request $request)
+        {
+            $search = $request->q;
+            $bukus = Buku::where('judul', 'LIKE', '%' . $search . '%')
+                        ->select('id', 'judul')
+                        ->limit(10)
+                        ->get();
+
+            return response()->json($bukus);
+        }
+
+
 }

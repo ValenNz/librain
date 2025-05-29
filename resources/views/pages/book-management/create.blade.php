@@ -29,25 +29,25 @@
         class="space-y-6">
         @csrf
 
-        <div class="mb-4">
+        <div">
             <label for="judul" class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
             <input type="text" name="judul" id="judul" required
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
         </div>
 
-        <div class="mb-4">
+        <div">
             <label for="penulis" class="block text-sm font-medium text-gray-700 mb-1">Penulis</label>
             <input type="text" name="penulis" id="penulis" required
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
         </div>
 
-        <div class="mb-4">
+        <div">
             <label for="penerbit" class="block text-sm font-medium text-gray-700 mb-1">Penerbit</label>
             <input type="text" name="penerbit" id="penerbit" required
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
         </div>
 
-        <div class="mb-4">
+        <div">
     <label for="tahun_terbit" class="block text-sm font-semibold text-gray-700 mb-2">
         Tahun Terbit
     </label>
@@ -65,7 +65,7 @@
     @enderror
 </div>
 
-        <div class="mb-4">
+        <div">
             <label for="foto_sampul" class="block text-sm font-medium text-gray-700 mb-1">Foto Sampul</label>
             <img id="preview-foto" src="#" alt="Preview Foto"
                 class="h-16 w-16 max-w-[64px] object-cover rounded-full mb-2 hidden block" />

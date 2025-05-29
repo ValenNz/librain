@@ -68,4 +68,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    Route::get('/anggota/search', [AnggotaController::class, 'search'])->name('anggota.search');
+Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
+
+
+
 });

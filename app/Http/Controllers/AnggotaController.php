@@ -115,4 +115,15 @@ class AnggotaController extends Controller
         return redirect()->route('anggota.index')->with('success', 'Anggota berhasil dihapus.');
     }
 
+    public function search(Request $request)
+    {
+        $search = $request->q;
+        $anggotas = Anggota::where('nama', 'LIKE', '%' . $search . '%')
+                          ->select('id', 'nama')
+                          ->limit(10)
+                          ->get();
+
+        return response()->json($anggotas);
+    }
+
 }
