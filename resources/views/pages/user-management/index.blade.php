@@ -52,16 +52,16 @@
                             Edit
                         </a>
 
-                        <form action="{{ route('anggota.destroy', $anggota->id) }}" method="POST"
-                            onsubmit="return confirm('Yakin ingin menghapus anggota ini?');">
+                        <form action="{{ route('anggota.destroy', $anggota->id) }}" method="POST" class="form-delete">
                             @csrf
                             @method('DELETE')
-                            <button type="submit"
-                                    class="inline-flex items-center px-3 py-1 text-sm font-medium text-red-600 border border-red-600 rounded hover:bg-red-50 transition duration-150 focus:outline-none"
-                                    aria-label="Hapus anggota {{ $anggota->nama }}">
+                            <button type="button"
+                                class="inline-flex items-center px-3 py-1 text-sm font-medium text-red-600 border border-red-600 rounded hover:bg-red-50 transition duration-150 focus:outline-none btn-delete"
+                                data-nama="{{ $anggota->nama }}">
                                 Delete
                             </button>
                         </form>
+
                     </div>
                 </td>
             </tr>
@@ -77,5 +77,37 @@
         {{ $anggotas->links('pagination::tailwind') }}
     </div>
 </div>
+
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('form');
+                const nama = this.getAttribute('data-nama');
+
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: `Anggota bernama "${nama}" akan dihapus secara permanen.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+@endpush
+
 
 @endsection

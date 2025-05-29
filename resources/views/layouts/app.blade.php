@@ -7,6 +7,7 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   @stack('styles')

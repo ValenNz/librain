@@ -34,7 +34,7 @@ class BukuController extends Controller
 
         if ($request->hasFile('foto_sampul')) {
             $imageName = time().'.'.$request->foto_sampul->extension();
-            $request->foto_sampul->move(public_path('storage'), $imageName);
+            $request->foto_sampul->move(public_path('storage/buku/'), $imageName);
             $data['foto_sampul'] = $imageName;
         }
 
@@ -48,66 +48,33 @@ class BukuController extends Controller
         return view('pages.book-management.edit', compact('buku'));
     }
 
-    
-    public function update(Request $request, Anggota $anggota)
+
+    public function update(Request $request, Buku $buku)
 {
-    // Validasi input dinamis
-    $rules = [
-        'nama' => 'required|string|max:255',
-        'telepon' => 'nullable|string|max:20',
-        'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'status' => 'in:active,inactive',
-    ];
+    $validated = $request->validate([
+        'judul' => 'required|string|max:255',
+        'penulis' => 'required|string|max:255',
+        'penerbit' => 'required|string|max:255',
+        'tahun_terbit' => 'required|digits:4',
+        'foto_sampul' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-    // Jika email diubah, lakukan validasi unik (kecuali untuk data saat ini)
-    if ($request->filled('email')) {
-        $rules['email'] = [
-            'required',
-            'email',
-            Rule::unique('anggota', 'email')->ignore($anggota->id),
-        ];
-    }
+    $data = $request->only(['judul', 'penulis', 'penerbit', 'tahun_terbit']);
 
-    // Jalankan validasi dengan rules dinamis
-    $validated = Validator::make($request->all(), $rules)->validate();
-
-    // Filter field mana saja yang mau diupdate
-    $data = [];
-
-    if ($request->filled('nama')) {
-        $data['nama'] = $request->input('nama');
-    }
-
-    if ($request->filled('email')) {
-        $data['email'] = $request->input('email');
-    }
-
-    if ($request->filled('telepon')) {
-        $data['telepon'] = $request->input('telepon');
-    }
-
-    if ($request->filled('status')) {
-        $data['status'] = $request->input('status');
-    }
-
-    // Upload foto jika ada
-    if ($request->hasFile('foto')) {
-        // Hapus foto lama jika tersedia
-        if ($anggota->foto && file_exists(public_path('storage/'.$anggota->foto))) {
-            unlink(public_path('storage/'.$anggota->foto));
+    if ($request->hasFile('foto_sampul')) {
+        // Hapus foto lama jika ada
+        if ($buku->foto_sampul && file_exists(public_path('storage/buku/'.$buku->foto_sampul))) {
+            unlink(public_path('storage/buku/'.$buku->foto_sampul));
         }
 
-        // Simpan foto baru
-        $file = $request->file('foto');
-        $imageName = time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('storage'), $imageName);
-        $data['foto'] = $imageName;
+        $imageName = time().'.'.$request->foto_sampul->extension();
+        $request->foto_sampul->move(public_path('storage/buku/'), $imageName);
+        $data['foto_sampul'] = $imageName;
     }
 
-    // Update data hanya yang berubah
-    $anggota->update($data);
+    $buku->update($data);
 
-    return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui.');
+    return redirect()->route('buku.index')->with('success', 'Data buku berhasil diperbarui.');
 }
 
     public function destroy(Buku $buku)
