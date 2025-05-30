@@ -40,7 +40,7 @@ class PeminjamanController extends Controller
     $bukuId = $validated['buku_id'];
 
     $overlap = Peminjaman::where('buku_id', $bukuId)
-        ->whereDoesntHave('pengembalian') 
+        ->whereDoesntHave('pengembalian')
         ->where(function($query) use ($startNew, $endNew) {
             $query->whereBetween('tanggal_pinjam', [$startNew, $endNew])
                 ->orWhereBetween('tanggal_tempo', [$startNew, $endNew])
@@ -91,7 +91,7 @@ class PeminjamanController extends Controller
     if ($needsValidation) {
         $overlap = Peminjaman::where('buku_id', $bukuId)
             ->where('id', '!=', $peminjaman->id)
-            ->whereDoesntHave('pengembalian') // hanya cek peminjaman belum dikembalikan
+            ->whereDoesntHave('pengembalian')
             ->where(function($query) use ($startNew, $endNew) {
                 $query->whereBetween('tanggal_pinjam', [$startNew, $endNew])
                       ->orWhereBetween('tanggal_tempo', [$startNew, $endNew])

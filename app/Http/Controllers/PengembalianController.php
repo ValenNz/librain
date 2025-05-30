@@ -24,45 +24,42 @@ class PengembalianController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'peminjaman_id' => 'required|exists:peminjaman,id',
-            'tanggal_kembali' => 'required|date',
-            'catatan_kondisi' => 'nullable|string',
+{
+    $request->validate([
+        'peminjaman_id' => 'required|exists:peminjaman,id',
+        'tanggal_kembali' => 'required|date',
+        'catatan_kondisi' => 'nullable|string',
+    ]);
+
+    $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
+
+    $tanggalTempo = Carbon::parse($peminjaman->tanggal_tempo)->startOfDay();
+    $tanggalKembali = Carbon::parse($request->tanggal_kembali)->startOfDay();
+
+    $pengembalian = Pengembalian::create([
+        'peminjaman_id' => $peminjaman->id,
+        'tanggal_kembali' => $tanggalKembali,
+        'catatan_kondisi' => $request->catatan_kondisi ?? '-',
+    ]);
+
+    $selisihHari = $tanggalKembali->diffInDays($tanggalTempo);
+
+    if ($selisihHari > 0) {
+        $dendaPerHari = 2000;
+        $totalDenda = $selisihHari * $dendaPerHari;
+
+        Denda::create([
+            'pengembalian_id' => $pengembalian->id,
+            'jumlah' => $totalDenda,
+            'alasan' => "Terlambat {$selisihHari} hari",
+            'status' => 'Non Paid',
         ]);
-
-        // Ambil data peminjaman
-        $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
-        $pengembalians = Pengembalian::with('peminjaman', 'denda')->paginate(10);
-        // Konversi tanggal ke pure date (tanpa waktu)
-        $tanggalTempo = Carbon::parse($peminjaman->tanggal_tempo)->startOfDay(); // Hanya tanggal, jam diatur ke 00:00:00
-        $tanggalKembali = Carbon::parse($request->tanggal_kembali)->startOfDay(); // Hanya tanggal, jam diatur ke 00:00:00
-
-        // Simpan pengembalian
-        $pengembalian = Pengembalian::create([
-            'peminjaman_id' => $peminjaman->id,
-            'tanggal_kembali' => $tanggalKembali,
-            'catatan_kondisi' => $request->catatan_kondisi ?? '-',
-        ]);
-
-        // Hitung selisih hari keterlambatan
-        $selisihHari = $tanggalKembali->gt($tanggalTempo) ? $tanggalKembali->diffInDays($tanggalTempo, false) : 0;
-
-        if ($selisihHari > 0) {
-            $dendaPerHari = 2000;
-            $totalDenda = $selisihHari * $dendaPerHari;
-
-            Denda::create([
-                'pengembalian_id' => $pengembalian->id,
-                'jumlah' => $totalDenda,
-                'alasan' => "Terlambat $selisihHari hari",
-                'status' => 'Non Paid', // cocok dengan enum
-            ]);
-        }
-
-        return redirect()->route('pengembalian.index')->with('success', 'Data pengembalian berhasil diperbarui.');
     }
+
+    $peminjaman->update(['pengembalian_id' => $pengembalian->id]);
+
+    return redirect()->route('pengembalian.index')->with('success', 'Pengembalian berhasil disimpan.');
+}
 
     public function show(Pengembalian $pengembalian): View
     {
@@ -76,16 +73,57 @@ class PengembalianController extends Controller
     }
 
     public function update(Request $request, Pengembalian $pengembalian)
-    {
-        $validated = $request->validate([
-            'tanggal_kembali' => 'required|date',
-            'catatan_kondisi' => 'nullable|string|max:500'
-        ]);
+{
+    // Validasi input
+    $validated = $request->validate([
+        'tanggal_kembali' => 'required|date',
+        'catatan_kondisi' => 'nullable|string|max:500',
+    ]);
 
-        $pengembalian->update($validated);
+    // Ambil data peminjaman terkait
+    $peminjaman = $pengembalian->peminjaman;
 
-        return redirect()->route('pengembalian.index')->with('success', 'Data pengembalian berhasil diperbarui.');
+    // Parse tanggal
+    $tanggalKembali = Carbon::parse($validated['tanggal_kembali'])->startOfDay();
+    $tanggalTempo = Carbon::parse($peminjaman->tanggal_tempo)->startOfDay();
+
+    // Hitung keterlambatan
+    $selisihHari = $tanggalKembali->diffInDays($tanggalTempo);
+
+    // Update pengembalian
+    $pengembalian->update([
+        'tanggal_kembali' => $tanggalKembali,
+        'catatan_kondisi' => $validated['catatan_kondisi'],
+    ]);
+
+    // Handle denda
+    if ($selisihHari > 0) {
+        $dendaPerHari = 2000;
+        $totalDenda = $selisihHari * $dendaPerHari;
+
+        // Jika sudah ada denda, update
+        if ($pengembalian->denda) {
+            $pengembalian->denda->update([
+                'jumlah' => $totalDenda,
+                'alasan' => "Terlambat {$selisihHari} hari",
+            ]);
+        } else {
+            // Jika belum ada denda, buat baru
+            $pengembalian->denda()->create([
+                'jumlah' => $totalDenda,
+                'alasan' => "Terlambat {$selisihHari} hari",
+                'status' => 'Non Paid',
+            ]);
+        }
+    } else {
+        // Jika tidak telat, hapus denda jika ada
+        if ($pengembalian->denda) {
+            $pengembalian->denda->delete();
+        }
     }
+
+    return redirect()->route('pengembalian.index')->with('success', 'Data pengembalian berhasil diperbarui.');
+}
 
     public function destroy(Pengembalian $pengembalian)
     {
@@ -109,7 +147,6 @@ class PengembalianController extends Controller
                 $q2->where('nama', 'like', '%'.$term.'%');
             });
         })
-        // Filter hanya peminjaman yang belum dikembalikan
         ->whereDoesntHave('pengembalian');
 
     $results = $query->get()->map(function($peminjaman) {
