@@ -23,13 +23,17 @@ class DashboardController extends Controller
             ->with('buku:id,judul')
             ->orderByDesc('pengembalian_count')
             ->first();
-        $aktivitas = Peminjaman::with(['anggota' => function ($query) {
+        $aktivitas = Peminjaman::with([
+            'anggota' => function ($query) {
                 $query->select('id', 'nama');
-            }])
-            ->latest()
-            ->take(5)
-            ->get(['id', 'anggota_id', 'tanggal_pinjam']); 
-
+            },
+            'buku' => function ($query) {
+                $query->select('id', 'judul');
+            }
+        ])
+        ->latest()
+        ->take(5)
+        ->get(['id', 'anggota_id', 'buku_id', 'tanggal_pinjam']);
         return view('pages.dashboard.index', compact(
             'totalAnggota',
             'bukuDipinjam',
