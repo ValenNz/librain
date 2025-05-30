@@ -62,7 +62,6 @@ class BukuController extends Controller
     $data = $request->only(['judul', 'penulis', 'penerbit', 'tahun_terbit']);
 
     if ($request->hasFile('foto_sampul')) {
-        // Hapus foto lama jika ada
         if ($buku->foto_sampul && file_exists(public_path('storage/buku/'.$buku->foto_sampul))) {
             unlink(public_path('storage/buku/'.$buku->foto_sampul));
         }

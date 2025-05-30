@@ -71,5 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/anggota/search', [AnggotaController::class, 'search'])->name('anggota.search');
 Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
 
+Route::get('/ajax/peminjamans', [PengembalianController::class, 'ajaxPeminjamans'])->name('ajax.peminjamans');
+
 
 });

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
+use App\Models\Denda;
+use App\Models\Peminjaman;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pengembalian extends Model
 {
@@ -22,17 +24,6 @@ class Pengembalian extends Model
 
     public function denda()
     {
-        return $this->hasOne(Denda::class, 'pengembalian_id');
+        return $this->hasOne(Denda::class);
     }
-
-    protected function getDendaAttribute()
-        {
-            if (!$this->tanggal_kembali || !$this->peminjaman?->tanggal_tempo) {
-                return 0;
-            }
-
-            $telat = Carbon::parse($this->tanggal_kembali)->diffInDays(Carbon::parse($this->peminjaman->tanggal_tempo));
-
-            return $telat > 0 ? $telat * 2000 : 0;
-        }
 }

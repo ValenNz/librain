@@ -23,47 +23,46 @@ class PengembalianController extends Controller
         return view('pages.pengembalian-management.create', compact('peminjamans'));
     }
 
-
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // Validasi input
+        $request->validate([
             'peminjaman_id' => 'required|exists:peminjaman,id',
             'tanggal_kembali' => 'required|date',
-            'catatan_kondisi' => 'nullable|string|max:255'
+            'catatan_kondisi' => 'nullable|string',
         ]);
 
-        $peminjaman = Peminjaman::find($validated['peminjaman_id']);
+        // Ambil data peminjaman
+        $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
+        $pengembalians = Pengembalian::with('peminjaman', 'denda')->paginate(10);
+        // Konversi tanggal ke pure date (tanpa waktu)
+        $tanggalTempo = Carbon::parse($peminjaman->tanggal_tempo)->startOfDay(); // Hanya tanggal, jam diatur ke 00:00:00
+        $tanggalKembali = Carbon::parse($request->tanggal_kembali)->startOfDay(); // Hanya tanggal, jam diatur ke 00:00:00
 
-        if (!$peminjaman) {
-            return back()->withErrors(['peminjaman_id' => 'Data peminjaman tidak ditemukan']);
-        }
-
-        $tanggal_kembali = Carbon::parse($validated['tanggal_kembali']);
-        $tanggal_tempo = Carbon::parse($peminjaman->tanggal_tempo);
-
-        $telat = 0;
-        if ($tanggal_kembali->gt($tanggal_tempo)) {
-            $telat = $tanggal_kembali->diffInDays($tanggal_tempo);
-        }
-
+        // Simpan pengembalian
         $pengembalian = Pengembalian::create([
-            'peminjaman_id' => $validated['peminjaman_id'],
-            'tanggal_kembali' => $validated['tanggal_kembali'],
-            'catatan_kondisi' => $validated['catatan_kondisi'] ?? null,
+            'peminjaman_id' => $peminjaman->id,
+            'tanggal_kembali' => $tanggalKembali,
+            'catatan_kondisi' => $request->catatan_kondisi ?? '-',
         ]);
 
-        if ($telat > 0) {
+        // Hitung selisih hari keterlambatan
+        $selisihHari = $tanggalKembali->gt($tanggalTempo) ? $tanggalKembali->diffInDays($tanggalTempo, false) : 0;
+
+        if ($selisihHari > 0) {
+            $dendaPerHari = 2000;
+            $totalDenda = $selisihHari * $dendaPerHari;
+
             Denda::create([
                 'pengembalian_id' => $pengembalian->id,
-                'jumlah' => $telat * 2000,
-                'alasan' => "Terlambat $telat hari",
-                'status' => 'Non Paid'
+                'jumlah' => $totalDenda,
+                'alasan' => "Terlambat $selisihHari hari",
+                'status' => 'Non Paid', // cocok dengan enum
             ]);
         }
 
-        return redirect()->route('pengembalian.index')->with('success', 'Buku berhasil dikembalikan.');
+        return redirect()->route('pengembalian.index')->with('success', 'Data pengembalian berhasil diperbarui.');
     }
-
 
     public function show(Pengembalian $pengembalian): View
     {
@@ -100,25 +99,29 @@ class PengembalianController extends Controller
 {
     $term = $request->get('term', '');
 
-    $peminjamans = Peminjaman::with(['buku', 'anggota'])
-        ->whereHas('buku', function($q) use ($term) {
-            $q->where('judul', 'like', "%{$term}%");
+    $query = Peminjaman::query()
+        ->with('buku', 'anggota')
+        ->where(function($q) use ($term) {
+            $q->whereHas('buku', function($q2) use ($term) {
+                $q2->where('judul', 'like', '%'.$term.'%');
+            })
+            ->orWhereHas('anggota', function($q2) use ($term) {
+                $q2->where('nama', 'like', '%'.$term.'%');
+            });
         })
-        ->orWhereHas('anggota', function($q) use ($term) {
-            $q->where('nama', 'like', "%{$term}%");
-        })
-        ->limit(20)
-        ->get();
+        // Filter hanya peminjaman yang belum dikembalikan
+        ->whereDoesntHave('pengembalian');
 
-    $result = $peminjamans->map(function($p) {
+    $results = $query->get()->map(function($peminjaman) {
         return [
-            'id' => $p->id,
-            'buku' => $p->buku->judul ?? '-',
-            'anggota' => $p->anggota->nama ?? '-',
+            'id' => $peminjaman->id,
+            'buku' => $peminjaman->buku->judul,
+            'anggota' => $peminjaman->anggota->nama,
         ];
     });
 
-    return response()->json($result);
+    return response()->json($results);
 }
+
 
 }

@@ -22,27 +22,31 @@
         <thead class="bg-gray-50">
             <tr>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Pinjam</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Peminjaman</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Tempo</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Kembali</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan Kondisi</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Denda</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                <th class="px-4 py-3 tex    t-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
             @foreach ($pengembalians as $pengembalian)
             <tr>
                 <td class="px-4 py-3 whitespace-nowrap text-gray-900">{{ $pengembalian->peminjaman_id }}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $pengembalian->peminjaman->tanggal_pinjam ?? '-' }}</td>
+                <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $pengembalian->peminjaman->tanggal_tempo ?? '-' }}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $pengembalian->tanggal_kembali ?? '-' }}</td>
                 <td class="px-4 py-3 whitespace-nowrap text-gray-700">
                     {{ Str::limit($pengembalian->catatan_kondisi, 50, '...') }}
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                    @if ($pengembalian->denda > 0)
-                        Rp{{ number_format($pengembalian->denda, 2) }}
-                    @else
-                        - (Tidak Ada Denda)
-                    @endif
-                </td>
+    @if ($pengembalian->denda)
+        Rp{{ number_format($pengembalian->denda->jumlah, 2) }}
+    @else
+        - (Tidak Ada Denda)
+    @endif
+</td>
                 <td class="px-4 py-3 whitespace-nowrap text-right min-w-[130px]">
                     <div class="flex justify-center items-center space-x-2">
                         <a href="{{ route('pengembalian.edit', $pengembalian->id) }}"

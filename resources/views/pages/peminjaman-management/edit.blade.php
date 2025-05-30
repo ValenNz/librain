@@ -44,7 +44,7 @@
                 <option value="{{ $peminjaman->buku->id }}" selected>{{ $peminjaman->buku->judul }}</option>
             </select>
         </div>
-
+        
         <div>
             <label for="tanggal_pinjam" class="block mb-2 text-sm font-medium text-gray-700">Tanggal Pinjam</label>
             <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" required
