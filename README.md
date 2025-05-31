@@ -1,12 +1,3 @@
-Berikut adalah **versi terbaru dari `README.md`** untuk aplikasi **LIBRAIN**, yang sudah diperbarui dengan:
-
-- ✅ Semua fitur CRUD (Create, Read, Update, Delete) tersedia
-- 📄 Halaman Denda bisa melakukan export ke CSV/PDF
-- 🖼 Tampilan demo web lengkap dengan placeholder gambar untuk halaman Login, Dashboard, Anggota, Buku, Peminjaman, Pengembalian, dan Denda
-- 🧩 Fitur tambahan seperti export data, filter, dan lainnya
-
----
-
 # 📚 LIBRAIN - Aplikasi Manajemen Perpustakaan
 
 > Sistem manajemen perpustakaan sederhana dengan Laravel 10 + Tailwind CSS
