@@ -1,0 +1,278 @@
+Berikut adalah versi **diperbarui dari `README.md`** untuk proyek **LIBRAIN**, yang sudah dilengkapi dengan bagian **"Tampilan Demo Web"** beserta **mockup visual** (placeholder gambar) untuk halaman:
+
+- 🔐 Login
+- 📊 Dashboard
+- 👤 Manajemen Anggota
+- ➕ Tambah/Edit Anggota
+
+Kamu bisa ganti placeholder URL gambar dengan screenshot asli nantinya.
+
+---
+
+# 📚 LIBRAIN - Aplikasi Manajemen Perpustakaan
+
+> Sistem manajemen perpustakaan sederhana dengan Laravel 10 + Tailwind CSS
+
+## 🌟 Overview
+
+LIBRAIN adalah aplikasi manajemen perpustakaan berbasis web yang dibangun menggunakan teknologi modern seperti **Laravel 10**, **Tailwind CSS**, dan **PHP 8.2+**. Tujuan utama aplikasi ini adalah untuk mempermudah pengelolaan data anggota, buku, peminjaman, dan denda keterlambatan dalam sebuah perpustakaan.
+
+---
+
+## 🧩 Fitur Utama (Saat Ini)
+
+| Modul | Fitur |
+|-------|-------|
+| **Anggota** | Tambah, Edit, Hapus, Upload Foto Profil, Status Aktif/Tidak Aktif |
+
+➡️ Saat ini fokus pada: **Manajemen Anggota**
+
+---
+
+## 🔧 Teknologi yang Digunakan
+
+| Teknologi | Versi |
+|----------|-------|
+| PHP      | ^8.2 |
+| Laravel  | ^10.0 |
+| TailwindCSS | CDN atau PostCSS |
+| Database | MySQL / PostgreSQL / SQLite |
+| JavaScript | Vanilla JS untuk interaksi modal |
+
+---
+
+## 🗂 Struktur Folder
+
+```
+project-librain/
+├── app/
+│   └── Models/
+│       └── Anggota.php
+├── routes/
+│   └── web.php
+├── resources/
+│   ├── views/
+│   │   └── pages/
+│   │       └── user-management/
+│   │           ├── index.blade.php
+│   │           ├── create.blade.php
+│   │           └── edit.blade.php
+│   └── layouts/
+│       └── app.blade.php
+├── public/
+│   └── storage/ ← tempat foto anggota diupload
+└── database/
+    └── migrations/
+        └── Anggota
+```
+
+---
+
+## 🛠 Persyaratan Sistem
+
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- MySQL / PostgreSQL / SQLite
+- Laravel 10.x
+
+---
+
+## 📦 Instalasi
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/namauser/project-librain.git
+cd project-librain
+```
+
+### 2. Install Dependency
+
+```bash
+composer install
+npm install
+```
+
+### 3. Buat `.env` file
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+### 4. Jalankan Migrasi
+
+```bash
+php artisan migrate
+```
+
+Jika pakai seeder:
+
+```bash
+php artisan db:seed --class=AnggotaSeeder
+```
+
+### 5. Jalankan Server
+
+```bash
+php artisan serve
+```
+
+### 6. Jalankan Tailwind Watcher (jika menggunakan PostCSS)
+
+```bash
+npm run dev
+```
+
+---
+
+## 🖼 Tampilan Demo Web
+
+Berikut adalah tampilan awal dari aplikasi LIBRAIN. Kamu bisa mengganti placeholder gambar dengan screenshot asli setelah menjalankan aplikasi.
+
+### 1. 🔐 Halaman Login
+*URI: `/login`*
+
+![Login Page](https://via.placeholder.com/800x400?text=Login+Page+-+LIBRAIN)
+
+Form login minimalis dengan validasi:
+- Input email dan password
+- Tombol login
+- Link registrasi (opsional)
+
+---
+
+### 2. 📊 Dashboard Utama
+*URI: `/dashboard`*
+
+![Dashboard](https://via.placeholder.com/800x400?text=Dashboard+-+LIBRAIN)
+
+Komponen:
+- Sidebar navigasi
+- Statistik jumlah anggota, buku, dll
+- Menu cepat akses
+
+---
+
+### 3. 👤 Manajemen Anggota
+*URI: `/anggota`*
+
+![Daftar Anggota](https://via.placeholder.com/800x400?text=Daftar+Anggota)
+
+Fitur:
+- Tabel daftar anggota
+- Pagination dan pencarian
+- Tombol tambah/edit/hapus
+
+---
+
+### 4. ➕ Tambah/Edit Anggota
+*URI: `/anggota/create` atau `/anggota/{id}/edit`*
+
+![Tambah Anggota](https://via.placeholder.com/800x400?text=Tambah+Edit+Anggota)
+
+Form:
+- Nama, Email, Telepon
+- Upload foto profil + preview
+- Status aktif/tidak aktif
+
+---
+
+## 📋 Model Anggota
+
+```php
+protected $fillable = ['nama', 'email', 'telepon', 'foto', 'status'];
+```
+
+Status:
+- `active`
+- `inactive`
+
+---
+
+## 🧰 Controller Anggota
+
+```bash
+php artisan make:controller AnggotaController --resource
+```
+
+Fungsi utama:
+- `index()` → daftar anggota
+- `create()` → form tambah
+- `store()` → simpan data baru
+- `edit($id)` → form edit
+- `update(Request $request, Anggota $anggota)` → update dinamis
+- `destroy(Anggota $anggota)` → hapus beserta foto
+
+---
+
+## 🧪 Blade View
+
+- `pages.user-management.index` → daftar anggota
+- `pages.user-management.create` → form tambah
+- `pages.user-management.edit` → form edit
+
+✔️ UI Responsif
+✔️ Preview foto saat upload
+✔️ Modal interaktif
+✔️ Alert error/sukses
+
+---
+
+## 📝 Lisensi
+
+MIT License
+
+---
+
+## 📬 Kontak
+
+- Email: [shevia@gmail.com](mailto:shevia@gmail.com)
+- GitHub: [https://github.com/namauser/project-librain](https://github.com/namauser/project-librain)
+
+---
+
+## 🚀 Kontribusi
+
+Kamu bisa fork repo ini dan kirim pull request untuk:
+- Menambahkan modul buku/peminjaman
+- Memperbaiki validasi input
+- Menambahkan export ke CSV/PDF
+- Mengintegrasikan dengan dashboard
+
+---
+
+## 🔚 Catatan Akhir
+
+Proyek ini masih dalam tahap awal pengembangan.
+Modul lain seperti **buku**, **peminjaman**, **pengembalian**, dan **denda** akan segera ditambahkan.
+
+---
+
+## 🙏 Terima Kasih!
+
+Terima kasih telah menggunakan LIBRAIN!
+Semoga membantu kamu belajar Laravel, Tailwind CSS, dan sistem manajemen perpustakaan.
+
+---
+
+## 💡 Ingin Lanjut?
+
+Ingin saya bantu tambahkan README untuk modul lain?
+- 📘 Buku
+- 📙 Peminjaman
+- 📗 Pengembalian
+- 📕 Denda
+- 📊 Dashboard Lengkap
+
+Silakan beri tahu:
+- Apakah kamu ingin README versi bahasa Indonesia atau Inggris?
+- Sudah ada struktur tabel database?
+- Ingin tambah screenshot/mockup?
+
+Saya siap bantu lengkapi total! 😊
+
+---
+
+🔍 Jika kamu ingin saya buatkan versi HTML/CSS mockup dari semua halaman di atas, cukup beri tahu dan saya akan kirimkan file statisnya.

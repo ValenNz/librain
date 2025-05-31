@@ -1,3 +1,12 @@
+Berikut adalah **versi terbaru dari `README.md`** untuk aplikasi **LIBRAIN**, yang sudah diperbarui dengan:
+
+- ✅ Semua fitur CRUD (Create, Read, Update, Delete) tersedia
+- 📄 Halaman Denda bisa melakukan export ke CSV/PDF
+- 🖼 Tampilan demo web lengkap dengan placeholder gambar untuk halaman Login, Dashboard, Anggota, Buku, Peminjaman, Pengembalian, dan Denda
+- 🧩 Fitur tambahan seperti export data, filter, dan lainnya
+
+---
+
 # 📚 LIBRAIN - Aplikasi Manajemen Perpustakaan
 
 > Sistem manajemen perpustakaan sederhana dengan Laravel 10 + Tailwind CSS
@@ -11,13 +20,15 @@ Aplikasi ini adalah sistem manajemen perpustakaan bernama **LIBRAIN**, dibangun 
 - **MySQL / PostgreSQL**
 
 Fitur utama:
-- ✅ Manajemen Anggota
-- ✅ Peminjaman Buku
-- ✅ Pengembalian Buku
-- ✅ Denda Keterlambatan
+- ✅ Manajemen Anggota (CRUD)
+- ✅ Manajemen Buku (CRUD)
+- ✅ Manajemen Peminjaman (CRUD)
+- ✅ Manajemen Pengembalian (CRUD)
+- ✅ Manajemen Denda (CRUD + Export ke CSV/PDF)
 - ✅ Dashboard Statistik
 - ✅ Upload Foto Profil Anggota
 - ✅ Pagination, Search, Modal Interaktif
+- ✅ Validasi Form Dinamis
 
 ---
 
@@ -25,13 +36,13 @@ Fitur utama:
 
 | Modul | Fitur |
 |-------|-------|
-| **Anggota** | Tambah, Edit, Hapus, Upload Foto, Status (Active/Inactive) |
-| **Buku** | Belum tersedia (akan ditambahkan) |
-| **Peminjaman** | Belum tersedia |
-| **Pengembalian** | Belum tersedia |
-| **Denda** | Belum tersedia |
+| **Anggota** | Tambah, Edit, Hapus, Upload Foto, Status (Active/Inactive), Cari & Pagination |
+| **Buku** | Tambah, Edit, Hapus, Kategori, Pagination, Cari |
+| **Peminjaman** | Tambah, Edit, Hapus, Riwayat Peminjaman, Filter |
+| **Pengembalian** | Tambah, Edit, Hapus, Hitung Denda Otomatis |
+| **Denda** | Lihat, Bayar, Ekspor ke CSV/PDF, Filter Berdasarkan Anggota/Tanggal |
 
-➡️ Saat ini fokus pada: `User Management`
+➡️ Semua modul sudah selesai dan siap digunakan!
 
 ---
 
@@ -43,7 +54,7 @@ Fitur utama:
 | Laravel   | ^10.0 |
 | TailwindCSS | CDN atau PostCSS |
 | MySQL / SQLite | Any |
-| JavaScript Vanilla | Untuk modal interaktif |
+| JavaScript Vanilla | Untuk modal interaktif dan preview foto |
 
 ---
 
@@ -53,28 +64,54 @@ Fitur utama:
 project-librain/
 ├── app/
 │   └── Models/
-│       └── Anggota.php
+│       ├── Anggota.php
+│       ├── Buku.php
+│       ├── Peminjaman.php
+│       ├── Pengembalian.php
+│       └── Denda.php
 │
 ├── routes/
 │   └── web.php
 │
 ├── resources/
 │   ├── views/
-│   │   └── pages/
-│   │       └── user-management/
-│   │           ├── index.blade.php
-│   │           └── create.blade.php
-│   │           └── edit.blade.php
+│   │   ├── pages/
+│   │   │   ├── anggota/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   ├── create.blade.php
+│   │   │   │   └── edit.blade.php
+│   │   │   ├── buku/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   ├── create.blade.php
+│   │   │   │   └── edit.blade.php
+│   │   │   ├── peminjaman/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   ├── create.blade.php
+│   │   │   │   └── edit.blade.php
+│   │   │   ├── pengembalian/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   ├── create.blade.php
+│   │   │   │   └── edit.blade.php
+│   │   │   ├── denda/
+│   │   │   │   ├── index.blade.php
+│   │   │   │   └── export.blade.php
+│   │   │
+│   │   └── layouts/
+│   │       └── app.blade.php
 │   │
-│   └── layouts/
-│       └── app.blade.php
+│   └── css/
+│       └── app.css
 │
 ├── public/
 │   └── storage/ ← tempat foto anggota diupload
 │
 └── database/
     └── migrations/
-        └── Anggota
+        ├── Anggota
+        ├── Buku
+        ├── Peminjaman
+        ├── Pengembalian
+        └── Denda
 ```
 
 ---
@@ -94,7 +131,7 @@ project-librain/
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/namauser/project-librain.git
+git clone https://github.com/namauser/project-librain.git  
 cd project-librain
 ```
 
@@ -115,14 +152,10 @@ php artisan key:generate
 ### 4. Jalankan Migrasi
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
-Kalau pakai seeder:
-
-```bash
-php artisan db:seed --class=AnggotaSeeder
-```
+Seeder akan mengisi data dummy untuk semua tabel.
 
 ### 5. Jalankan Laravel
 
@@ -145,18 +178,18 @@ npm run dev
 | `/login` | Halaman login pengguna |
 | `/dashboard` | Dashboard utama |
 | `/anggota` | Daftar anggota |
-| `/anggota/create` | Form tambah anggota |
-| `/anggota/{id}/edit` | Form edit anggota |
-| `/denda` | Manajemen denda (belum tersedia) |
-| `/peminjaman` | Manajemen peminjaman (akan ditambahkan) |
-| `/pengembalian` | Manajemen pengembalian (akan ditambahkan) |
+| `/buku` | Daftar buku |
+| `/peminjaman` | Daftar peminjaman |
+| `/pengembalian` | Daftar pengembalian |
+| `/denda` | Daftar denda |
+| `/denda/export` | Export data denda ke CSV/PDF |
 
 ---
 
 ## 💡 Fungsi Utama
 
 ### Validasi Dinamis
-- Update data hanya field yang berubah (`filled()` + `sometimes`)
+- Update hanya field yang berubah (`filled()` + `sometimes`)
 - Validasi email unik → gunakan `Rule::unique('anggota')->ignore($anggota->id)`
 
 ### Upload Foto
@@ -164,8 +197,101 @@ npm run dev
 - Hapus foto lama saat update
 
 ### Modal Interaktif
-- Add anggota via modal tanpa reload halaman
+- Add anggota/buku/peminjaman via modal tanpa reload halaman
 - Preview foto saat upload
+
+### Export Data
+- Di halaman `/denda`, kamu bisa ekspor data dalam format:
+  - 📄 CSV
+  - 📄 PDF (via DomPDF)
+
+---
+
+## 🖼 Tampilan Demo Web
+
+Berikut adalah tampilan awal dari aplikasi LIBRAIN. Kamu bisa mengganti placeholder gambar dengan screenshot asli setelah menjalankan aplikasi.
+
+### 1. 🔐 Halaman Login  
+*URI: `/login`*
+
+![Login Page](https://via.placeholder.com/800x400?text=Login+Page+-+LIBRAIN)
+
+Form login minimalis dengan validasi:
+- Input email dan password
+- Tombol login
+- Link registrasi (opsional)
+
+---
+
+### 2. 📊 Dashboard Utama  
+*URI: `/dashboard`*
+
+![Dashboard](https://via.placeholder.com/800x400?text=Dashboard+-+LIBRAIN)
+
+Komponen:
+- Sidebar navigasi
+- Statistik jumlah anggota, buku, dll
+- Menu cepat akses
+
+---
+
+### 3. 👤 Manajemen Anggota  
+*URI: `/anggota`*
+
+![Daftar Anggota](https://via.placeholder.com/800x400?text=Daftar+Anggota)
+
+Fitur:
+- Tabel daftar anggota
+- Pagination dan pencarian
+- Tombol tambah/edit/hapus
+- Upload foto profil
+
+---
+
+### 4. 📚 Manajemen Buku  
+*URI: `/buku`*
+
+![Manajemen Buku](https://via.placeholder.com/800x400?text=Manajemen+Buku)
+
+Fitur:
+- Tambah/Edit/Hapus buku
+- Pagination
+- Filter kategori
+
+---
+
+### 5. 📤 Peminjaman  
+*URI: `/peminjaman`*
+
+![Peminjaman](https://via.placeholder.com/800x400?text=Peminjaman+Buku)
+
+Fitur:
+- Tambah/Edit/Hapus peminjaman
+- Riwayat peminjaman
+- Filter tanggal
+
+---
+
+### 6. 📥 Pengembalian  
+*URI: `/pengembalian`*
+
+![Pengembalian](https://via.placeholder.com/800x400?text=Pengembalian+Buku)
+
+Fitur:
+- Tambah/Edit/Hapus pengembalian
+- Hitung otomatis denda jika telat
+
+---
+
+### 7. 💰 Denda  
+*URI: `/denda`*
+
+![Denda](https://via.placeholder.com/800x400?text=Data+Denda)
+
+Fitur:
+- Lihat daftar denda
+- Bayar denda
+- Export ke CSV/PDF
 
 ---
 
@@ -222,26 +348,24 @@ MIT License
 Jika ada pertanyaan atau ingin bantuan fix bug, hubungi saya di:
 
 - Email: [shevia@gmail.com](mailto:shevia@gmail.com)
-- GitHub: [https://github.com/namauser/project-librain](https://github.com/namauser/project-librain)
+- GitHub: [https://github.com/namauser/project-librain](https://github.com/namauser/project-librain)  
 
 ---
 
 ## 🚀 Contribusi
 
 Kamu bisa fork repo ini dan kirim pull request untuk:
-- Menambahkan modul buku/peminjaman
-- Memperbaiki validasi input
-- Menambahkan export ke CSV/PDF
-- Mengintegrasikan dengan dashboard
+- Menambahkan fitur baru
+- Memperbaiki UI/UX
+- Mengintegrasikan dengan API eksternal
+- Menulis dokumentasi lebih lengkap
 
 ---
 
 ## 🔚 Catatan Akhir
 
-Proyek ini masih dalam tahap awal pengembangan.  
-Saat ini fokus pada **manajemen anggota** dan UI dasar.
-
-Modul lain seperti **buku**, **peminjaman**, **pengembalian**, dan **denda** akan segera ditambahkan.
+Proyek ini sudah selesai dikembangkan secara keseluruhan.
+Modul-modul sudah bisa digunakan untuk simulasi maupun produksi sederhana.
 
 ---
 
@@ -252,16 +376,4 @@ Semoga membantu kamu belajar Laravel, Tailwind CSS, dan sistem manajemen perpust
 
 ---
 
-Ingin saya tambahkan README untuk modul lain?
-- 📘 Buku
-- 📙 Peminjaman
-- 📗 Pengembalian
-- 📕 Denda
-- 📊 Dashboard Lengkap
-
-Cukup kirim:
-- Apakah kamu ingin README versi bahasa Indonesia atau Inggris?
-- Sudah ada tabel database?
-- Ingin tambah screenshot?
-
-Saya siap bantu lengkapi total! 😊
+Jika kamu ingin saya bantu buatkan versi HTML/CSS statis dari semua halaman, atau ingin saya tambahkan **mockup desain Figma**, cukup beri tahu ya 😊
