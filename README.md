@@ -70,7 +70,7 @@ Fitur:
 ### 6. 📥 Pengembalian  
 *URI: `/pengembalian`*
 
-![Pengembalian](public/demo/penge,balian-management-index-page.png)
+![Pengembalian](public/demo/pengembalian-management-index-page.png)
 
 Fitur:
 - Tambah/Edit/Hapus pengembalian
@@ -81,7 +81,7 @@ Fitur:
 ### 7. 💰 Denda  
 *URI: `/denda`*
 
-![Denda](public/demo/denda-management-index-page.png)
+![Denda](public/demo/denda-management-index.png)
 
 Fitur:
 - Lihat daftar denda
