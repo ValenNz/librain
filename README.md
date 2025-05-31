@@ -205,7 +205,7 @@ Berikut adalah tampilan awal dari aplikasi LIBRAIN. Kamu bisa mengganti placehol
 ### 1. 🔐 Halaman Login  
 *URI: `/login`*
 
-![Login Page](public/demo/login-page.png)
+![Login Page](public/demo/storage/login-page.png)
 
 Form login minimalis dengan validasi:
 - Input email dan password
@@ -217,7 +217,7 @@ Form login minimalis dengan validasi:
 ### 2. 📊 Dashboard Utama  
 *URI: `/dashboard`*
 
-![Dashboard](public/demo/dashboard-page.png)
+![Dashboard](public/demo/storage/dashboard-page.png)
 
 Komponen:
 - Sidebar navigasi
@@ -229,7 +229,7 @@ Komponen:
 ### 3. 👤 Manajemen Anggota  
 *URI: `/anggota`*
 
-![Daftar Anggota](public/demo/user-management-index-page.png)
+![Daftar Anggota](public/demo/storage/user-management-index-page.png)
 
 Fitur:
 - Tabel daftar anggota
@@ -242,7 +242,7 @@ Fitur:
 ### 4. 📚 Manajemen Buku  
 *URI: `/buku`*
 
-![Manajemen Buku](public/demo/book-management-index-page.png)
+![Manajemen Buku](public/demo/storage/book-management-index-page.png)
 
 Fitur:
 - Tambah/Edit/Hapus buku
@@ -254,7 +254,7 @@ Fitur:
 ### 5. 📤 Peminjaman  
 *URI: `/peminjaman`*
 
-![Peminjaman](public/demo/peminjaman-management-index-page.png)
+![Peminjaman](public/demo/storage/peminjaman-management-index-page.png)
 
 Fitur:
 - Tambah/Edit/Hapus peminjaman
@@ -266,7 +266,7 @@ Fitur:
 ### 6. 📥 Pengembalian  
 *URI: `/pengembalian`*
 
-![Pengembalian](public/demo/penge,balian-management-index-page.png)
+![Pengembalian](public/demo/storage/penge,balian-management-index-page.png)
 
 Fitur:
 - Tambah/Edit/Hapus pengembalian
@@ -277,7 +277,7 @@ Fitur:
 ### 7. 💰 Denda  
 *URI: `/denda`*
 
-![Denda](public/demo/denda-management-index-page.png)
+![Denda](public/demo/storage/denda-management-index-page.png)
 
 Fitur:
 - Lihat daftar denda
