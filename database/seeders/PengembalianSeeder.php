@@ -3,43 +3,42 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
-use Carbon\Carbon;
-use App\Models\Peminjaman;
-use App\Models\Pengembalian;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Date;
 
 class PengembalianSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function run()
     {
-        $faker = Faker::create();
+        $pengembalian = [
+            [
+                'peminjaman_id' => 1,
+                'tanggal_kembali' => Date::now(),
+                'catatan_kondisi' => 'Buku dalam kondisi baik',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'peminjaman_id' => 2,
+                'tanggal_kembali' => Date::parse('2024-10-15'),
+                'catatan_kondisi' => 'Buku sedikit rusak halaman 10-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'peminjaman_id' => 3,
+                'tanggal_kembali' => Date::parse('2024-10-20'),
+                'catatan_kondisi' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ];
 
-        // Ambil semua peminjaman yang belum punya pengembalian (tanpa menggunakan kolom pengembalian_id)
-        $peminjamenTanpaPengembalian = Peminjaman::doesntHave('pengembalian')->get();
-
-        if ($peminjamenTanpaPengembalian->isEmpty()) {
-            $this->command->info("Tidak ada peminjaman tanpa pengembalian.");
-            return;
-        }
-
-        foreach ($peminjamenTanpaPengembalian->take(5) as $peminjaman) {
-            // Tentukan apakah buku dikembalikan tepat waktu atau terlambat
-            $tanggalTempo = Carbon::parse($peminjaman->tanggal_tempo);
-
-            if (rand(0, 1)) {
-                $tanggalKembali = $tanggalTempo; // Tepat waktu
-            } else {
-                $tanggalKembali = $tanggalTempo->copy()->addDays(rand(1, 7)); // Terlambat
-            }
-
-            // Simpan pengembalian
-            Pengembalian::create([
-                'peminjaman_id' => $peminjaman->id,
-                'tanggal_kembali' => $tanggalKembali,
-                'catatan_kondisi' => $faker->sentence(3),
-            ]);
-        }
-
-        $this->command->info("Seeder pengembalian berhasil dijalankan.");
+        DB::table('pengembalian')->insert($pengembalian);
     }
 }
