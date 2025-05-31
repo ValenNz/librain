@@ -33,7 +33,7 @@ Komponen:
 ### 3. 👤 Manajemen Anggota  
 *URI: `/anggota`*
 
-![Daftar Anggota](public/demo/user-management-index-page.png)
+![Daftar Anggota](public/demo/user-management-index)
 
 Fitur:
 - Tabel daftar anggota
