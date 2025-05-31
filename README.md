@@ -2,6 +2,94 @@
 
 > Sistem manajemen perpustakaan sederhana dengan Laravel 10 + Tailwind CSS
 
+## 🖼 Tampilan Demo Web
+
+Berikut adalah tampilan awal dari aplikasi LIBRAIN. Kamu bisa mengganti placeholder gambar dengan screenshot asli setelah menjalankan aplikasi.
+
+### 1. 🔐 Halaman Login  
+*URI: `/login`*
+
+![Login Page](public/demo/login-page.png)
+
+Form login minimalis dengan validasi:
+- Input email dan password
+- Tombol login
+- Link registrasi (opsional)
+
+---
+
+### 2. 📊 Dashboard Utama  
+*URI: `/dashboard`*
+
+![Dashboard](public/demo/dashboard-page.png)
+
+Komponen:
+- Sidebar navigasi
+- Statistik jumlah anggota, buku, dll
+- Menu cepat akses
+
+---
+
+### 3. 👤 Manajemen Anggota  
+*URI: `/anggota`*
+
+![Daftar Anggota](public/demo/user-management-index-page.png)
+
+Fitur:
+- Tabel daftar anggota
+- Pagination dan pencarian
+- Tombol tambah/edit/hapus
+- Upload foto profil
+
+---
+
+### 4. 📚 Manajemen Buku  
+*URI: `/buku`*
+
+![Manajemen Buku](public/demo/book-management-index-page.png)
+
+Fitur:
+- Tambah/Edit/Hapus buku
+- Pagination
+- Filter kategori
+
+---
+
+### 5. 📤 Peminjaman  
+*URI: `/peminjaman`*
+
+![Peminjaman](public/demo/peminjaman-management-index-page.png)
+
+Fitur:
+- Tambah/Edit/Hapus peminjaman
+- Riwayat peminjaman
+- Filter tanggal
+
+---
+
+### 6. 📥 Pengembalian  
+*URI: `/pengembalian`*
+
+![Pengembalian](public/demo/penge,balian-management-index-page.png)
+
+Fitur:
+- Tambah/Edit/Hapus pengembalian
+- Hitung otomatis denda jika telat
+
+---
+
+### 7. 💰 Denda  
+*URI: `/denda`*
+
+![Denda](public/demo/denda-management-index-page.png)
+
+Fitur:
+- Lihat daftar denda
+- Bayar denda
+- Export ke CSV/PDF
+
+---
+
 ## 📌 Deskripsi Proyek
 
 Aplikasi ini adalah sistem manajemen perpustakaan bernama **LIBRAIN**, dibangun menggunakan:
@@ -195,94 +283,6 @@ npm run dev
 - Di halaman `/denda`, kamu bisa ekspor data dalam format:
   - 📄 CSV
   - 📄 PDF (via DomPDF)
-
----
-
-## 🖼 Tampilan Demo Web
-
-Berikut adalah tampilan awal dari aplikasi LIBRAIN. Kamu bisa mengganti placeholder gambar dengan screenshot asli setelah menjalankan aplikasi.
-
-### 1. 🔐 Halaman Login  
-*URI: `/login`*
-
-![Login Page](public/demo/login-page.png)
-
-Form login minimalis dengan validasi:
-- Input email dan password
-- Tombol login
-- Link registrasi (opsional)
-
----
-
-### 2. 📊 Dashboard Utama  
-*URI: `/dashboard`*
-
-![Dashboard](public/demo/dashboard-page.png)
-
-Komponen:
-- Sidebar navigasi
-- Statistik jumlah anggota, buku, dll
-- Menu cepat akses
-
----
-
-### 3. 👤 Manajemen Anggota  
-*URI: `/anggota`*
-
-![Daftar Anggota](public/demo/user-management-index-page.png)
-
-Fitur:
-- Tabel daftar anggota
-- Pagination dan pencarian
-- Tombol tambah/edit/hapus
-- Upload foto profil
-
----
-
-### 4. 📚 Manajemen Buku  
-*URI: `/buku`*
-
-![Manajemen Buku](public/demo/book-management-index-page.png)
-
-Fitur:
-- Tambah/Edit/Hapus buku
-- Pagination
-- Filter kategori
-
----
-
-### 5. 📤 Peminjaman  
-*URI: `/peminjaman`*
-
-![Peminjaman](public/demo/peminjaman-management-index-page.png)
-
-Fitur:
-- Tambah/Edit/Hapus peminjaman
-- Riwayat peminjaman
-- Filter tanggal
-
----
-
-### 6. 📥 Pengembalian  
-*URI: `/pengembalian`*
-
-![Pengembalian](public/demo/penge,balian-management-index-page.png)
-
-Fitur:
-- Tambah/Edit/Hapus pengembalian
-- Hitung otomatis denda jika telat
-
----
-
-### 7. 💰 Denda  
-*URI: `/denda`*
-
-![Denda](public/demo/denda-management-index-page.png)
-
-Fitur:
-- Lihat daftar denda
-- Bayar denda
-- Export ke CSV/PDF
 
 ---
 
